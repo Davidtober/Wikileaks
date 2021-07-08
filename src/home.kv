@@ -1,0 +1,235 @@
+<HomeScreen>:
+	# trick to not lost the Dropdown instance
+	# Dropdown itself is not really made to be used in kv.
+	__safe_id: [min_dropdown.__self__, max_dropdown.__self__, classification_dropdown.__self__, tags_dropdown.__self__]
+	
+	NavigationDrawer:
+		id: navdrawer
+		BoxLayout:
+			orientation: 'vertical'
+			id: side_menu
+	    	Button:
+	        	text: 'SOM'
+	        	on_press:
+	        		root.manager.current = 'som'
+	        		root.manager.transition.direction = 'left'
+	        		navdrawer.toggle_state()
+	        Button:
+	            text: 'Map'
+	            on_press: 
+	            	root.manager.current = 'map'
+	            	root.manager.transition.direction = 'left'
+	            	navdrawer.toggle_state()
+	        Button:
+	        	text: 'view plots'
+	        	on_press: 
+	        		root.manager.current = 'plot'
+	        		root.manager.transition.direction = 'left'
+					navdrawer.toggle_state()
+		BoxLayout:
+			id: main_screen
+			orientation: 'vertical'
+			BoxLayout:
+				orientation: 'horizontal'
+				size_hint: (1, 0.05)
+				Button:
+					font_name: 'fonts/fontawesome-webfont.ttf'
+					text: u'\uf0c9'
+					#size_hint: (0.1, None)
+					on_press: navdrawer.toggle_state()
+				TextInput:
+					id: user_search_input
+					#size_hint: (0.8, None)
+		    		multiline: False
+		    		on_text_validate: root.search(min_btn.text, max_btn.text, user_location_input.text, user_classification_input.text, user_tags_input.text, user_search_input.text)
+				Button:
+					id: search_button
+					#size_hint: (0.1, None)
+					font_name: 'fonts/fontawesome-webfont.ttf'
+					text: u'\uf002'
+					on_press:
+						root.search(min_btn.text, max_btn.text, user_location_input.text, user_classification_input.text, user_tags_input.text, user_search_input.text)
+			GridLayout:
+				id: results_list_header
+				cols: 4
+				size_hint: (1,0.1)
+				Button:
+					id: received_header
+					markup: True
+					text: 'Date'
+					on_release: root.order_by('RECEIVED', received_header)
+				Button:
+					id: location_header
+					#font_name: 'fonts/fontawesome-webfont.ttf'
+					markup: True
+					text: 'Location '
+					on_release: root.order_by('LOCATION', location_header)
+				Button: 
+					id: classification_header
+					markup: True
+					text: 'Classification '
+					on_release: root.order_by('CLASSIFICATION', classification_header)
+				Button:
+					id: tags_header
+					markup: True
+					text: 'TAGS '
+				BoxLayout:
+					orientation: 'horizontal'
+	
+					Button:
+						id: min_btn
+						text: 'min year'
+						on_release: min_dropdown.open(self)
+					
+					DropDown:
+						id: min_dropdown
+						on_parent: self.dismiss()
+						on_select: min_btn.text = '{}'.format(args[1])
+						
+					Button:
+						id: max_btn
+						text: 'max year'
+						on_release: max_dropdown.open(self)
+					
+					DropDown:
+						id: max_dropdown
+						on_parent: self.dismiss()
+						on_select: max_btn.text = '{}'.format(args[1])
+				
+		    	TextInput:
+		    		id: user_location_input
+		    		multiline: False
+		    		on_text_validate: root.search(min_btn.text, max_btn.text, user_location_input.text, user_classification_input.text, user_tags_input.text, user_search_input.text)
+		    	
+		    	Button:
+		    		id: user_classification_input
+		    		text: 'classification'
+		    		on_release: classification_dropdown.open(self)
+		    	DropDown:
+		    		id: classification_dropdown
+		    		on_parent: self.dismiss()
+		    		on_select: user_classification_input.text = '{}'.format(args[1])
+		    			    	
+		    	Button:
+		    		id: user_tags_input
+		    		text: 'TAG'
+		    		on_release: tags_dropdown.open(self)
+		    	DropDown:
+		    		id: tags_dropdown
+		    		on_parent: self.dismiss()
+		    		on_select: user_tags_input.text = '{}'.format(args[1])
+			ScrollView:
+				id: scroll_results
+				size_hint: (1,0.75)
+				GridLayout:
+					id: results_grid
+					cols:1
+					row_default_height: 40
+					height: self.minimum_height
+					size_hint:  (1,None)
+					canvas.before:
+		    			Color:
+							rgba: 0, 0, 1, 0.5
+		    			Rectangle:
+		    		    	pos: self.pos
+		    		    	size: self.size
+		    BoxLayout:
+		    	id: page_nav
+		    	size_hint: (1, 0.05)
+		    	orientation: 'horizontal'
+		    	Button:
+		    		text: 'first'
+		    		on_release: root.change_page(1)
+		    	Button:
+		    		text: 'prev'
+		    		on_release: root.change_page(root.page-1)
+		    	BoxLayout:
+		    		orientation: 'horizontal'
+		    		TextInput:
+		    			id: user_page_input
+		    			input_filter: 'int'
+		    			multiline: False
+		    			text_size: self.size
+		    			halign: 'right'
+		    			on_text_validate: root.change_page(int(self.text))
+		    		Label:
+		    			id: total_pages
+		    			text_size: self.size
+		    			halign: 'left'
+		    			valign: 'middle'
+		    	Button:
+		    		text: 'next'
+		    		on_release: root.change_page(root.page+1)
+		    	Button:
+		    		text: 'last'
+		    		on_release: root.change_page(root.total_pages)
+
+<TableRow>:
+	pos: root.pos
+	size: root.size
+	BoxLayout:
+		orientation: 'horizontal'
+		pos: root.pos
+		size: root.size
+		Label:
+			id: classification
+			text_size: self.width, None
+			halign: 'center'
+			shorten: True
+        	color: 1,0,1,1
+        	canvas.before:
+            	Color:
+                	rgba: 0.6, 0.6, 0.6, 0.5
+            	Rectangle:
+                	pos: self.pos
+                	size: self.size
+		Label:
+			id: location
+			text_size: self.width, None
+			halign: 'center'
+			shorten: True
+        	color: 1,0,1,1
+        	canvas.before:
+            	Color:
+                	rgba: 0.6, 0.6, 0.6, 1
+            	Rectangle:
+                	pos: self.pos
+                	size: self.size
+		Label:
+			id: received_date
+			text_size: self.width, None
+			halign: 'center'
+			shorten: True
+        	color: 1,0,1,1
+        	canvas.before:
+            	Color:
+                	rgba: 0.6, 0.6, 0.6, 0.5
+            	Rectangle:
+                	pos: self.pos
+                	size: self.size
+		Label:
+			id: tags
+			text_size: self.width, None
+			halign: 'center'
+			shorten: True
+        	color: 1,0,1,1
+        	canvas.before:
+            	Color:
+                	rgba: 0.6, 0.6, 0.6, 1
+            	Rectangle:
+                	pos: self.pos
+                	size: self.size
+                	
+<PopupBox>:
+    size_hint: .3, .2
+    auto_dismiss: False
+    title: 'Status'
+    BoxLayout:
+        orientation: "horizontal"
+        Label:
+            id: _pop_up_text
+            text: 'Obtaining results'
+        ProgressSpinner:
+        	color: 1, 1, 1, 1
+			stroke_width: 2
+			speed: 1

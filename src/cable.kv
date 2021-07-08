@@ -1,0 +1,62 @@
+<CableScreen>:
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			orientation: 'horizontal'
+			id: toolbar
+			size_hint: (1, 0.05)
+			Button:
+				text: 'Highlight sentiment'
+				on_press: 
+					root.highlight_sentiment()
+			Button:
+				text: 'Read Summary'
+				on_press:
+					root.display_summary()
+		ScrollView:
+			size_hint: (1,0.9)
+			Label:
+				id: cable_data
+				halign: 'center'
+				markup: True
+				size_hint_y: None
+				text_size: self.width, None
+				height: self.texture_size[1]
+		Button:
+    		font_name: 'fonts/fontawesome-webfont.ttf'
+	        text: u'\uf060'
+        	size_hint: (1, 0.05)
+        	on_press: 
+            	root.manager.current = root.source
+            	root.manager.transition.direction = 'right'
+            	root.children[0].children[1].scroll_y = 1
+
+<SummaryContent>:
+	BoxLayout:
+		orientation: 'vertical'
+		pos: root.pos
+		size:root.size
+		ScrollView:
+			size_hint: (1,0.9)
+			Label:
+				id: summary
+				text_size: (self.width, None)
+				size_hint_y: None
+				height: self.texture_size[1]
+		Button:
+			text: 'Close'
+			size_hint: (1, 0.1)
+			on_press: root.p.dismiss()
+<SummaryPopupBox>:
+    size_hint: .4, .2
+    auto_dismiss: False
+    title: 'Status'
+    BoxLayout:
+        orientation: 'horizontal'
+        Label:
+            id: _pop_up_text
+            text: 'Generating Summary'
+        ProgressSpinner:
+        	color: 1, 1, 1, 1
+			stroke_width: 2
+			speed: 1

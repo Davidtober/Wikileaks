@@ -1,0 +1,62 @@
+<MapScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+        	orientation: 'horizontal'
+        	size_hint: (1, 0.075)
+        	Slider:
+        		id: min_year
+        		size_hint: (0.9, 1)
+        		min: 1966
+        		max: 2010
+        		value: 1966
+        		step: 1
+        		on_value: 
+        			root.adjust_max_slider()
+        			root.display_heat_map(min_year.value, max_year.value)
+        	Label:
+        		size_hint: (0.1,1)
+        		text: str(int(min_year.value))
+        BoxLayout:
+        	orientation: 'horizontal'
+        	size_hint: (1, 0.075)
+        	Slider:
+        		id: max_year
+        		size_hint: (0.9, 0.1)
+        		min: 1966
+        		max: 2010
+        		value_normalized: 0.5
+        		step: 1
+        		on_value:
+					root.adjust_min_slider()
+        			root.display_heat_map(min_year.value, max_year.value)
+        	Label:
+        		size_hint: (0.1,0.1)
+        		text: str(int(max_year.value))
+        RelativeLayout:
+			id: world
+			canvas:
+				Rectangle:
+					source: 'land_ocean_ice_2048.jpg'
+					size: (root.width,root.width/2)
+					pos: (0, 0)
+        BoxLayout:
+        	orientation: 'horizontal'
+        	size_hint: (1, 0.1)
+	        Button:
+	        	font_name: 'fonts/fontawesome-webfont.ttf'
+	            text: u'\uf060'
+	            on_press: 
+	            	root.manager.current = 'home'
+	            	root.manager.transition.direction = 'right'
+	        Button
+	        	text: 'Animate'
+	        	on_press:
+	        		root.animate()
+	        		
+<CityPopup>:
+	title: 'City Data'
+	size_hint: .4, .2
+	Label:
+		id: content
+          	

@@ -1,0 +1,60 @@
+<SOMScreen>:
+	BoxLayout:
+		orientation: 'vertical'
+		id: layout
+			
+		Button:
+    		font_name: 'fonts/fontawesome-webfont.ttf'
+	        text: u'\uf060'
+        	size_hint: (1, 0.05)
+        	on_press: 
+            	root.manager.current = 'home'
+            	root.manager.transition.direction = 'right'
+            	root.children[0].children[1].scroll_y = 1
+<ClusterPopup>:
+	title: 'Selected Cluster'
+	size_hint: (0.8, 0.8)
+	BoxLayout:
+		orientation: 'vertical'
+		Button:
+			text: 'Subject'
+			size_hint: (1,0.1)
+		ScrollView:
+			GridLayout:
+				id: results_grid
+				cols:1
+				row_default_height: 40
+				height: self.minimum_height
+				size_hint:  (1,None)
+				canvas.before:
+			    	Color:
+						rgba: 0, 0, 1, 0.5
+			    	Rectangle:
+			        	pos: self.pos
+			        	size: self.size
+
+<WaitPopup>:
+    size_hint: .3, .2
+    auto_dismiss: False
+    title: 'Status'
+    BoxLayout:
+        orientation: "horizontal"
+        Label:
+            id: _pop_up_text
+            text: 'Unpacking Cluster'
+        ProgressSpinner:
+        	color: 1, 1, 1, 1
+			stroke_width: 2
+			speed: 1
+			
+<ClusterRow>:
+	pos: root.pos
+	size: root.size
+	Label:
+		id: lbl
+		text_size: self.width, None
+		halign: 'center'
+		shorten: True
+		pos: root.pos
+		size: root.size
+		        	

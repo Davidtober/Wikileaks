@@ -1,0 +1,59 @@
+<PlotScreen>:
+	__safe_id: [tags_dropdown.__self__]
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint: (1, 0.05)
+			Button:
+		    	id: user_tags_input
+		    	text: 'TAG'
+		    	on_release: tags_dropdown.open(self)
+		    DropDown:
+		    	id: tags_dropdown
+		    	on_parent: self.dismiss()
+		    	on_select: user_tags_input.text = '{}'.format(args[1])
+	    	Button:
+	    		id: search_button
+	    		font_name: 'fonts/fontawesome-webfont.ttf'
+				text: u'\uf002'
+	        	on_press:
+	        		root.search(user_tags_input.text)
+	        Button:
+	        	text: 'Clear'
+	        	on_press:
+	        		root.clear_plots()
+	    BoxLayout:
+	    	orientation: 'horizontal'
+	    	size_hint: (1, 0.9)
+			id: layout
+			ScrollView:
+				size_hint: (0.2, 1)
+				GridLayout:
+					id: legend
+					cols:1
+					row_default_height: 40
+					height: self.minimum_height
+					size_hint: (1, None)
+        Button:
+            font_name: 'fonts/fontawesome-webfont.ttf'
+	        text: u'\uf060'
+            size_hint: (1, 0.05)
+            on_press: 
+            	root.manager.current = 'home'
+            	root.manager.transition.direction = 'right'
+            	
+                	
+<PlotPopupBox>:
+    size_hint: .3, .2
+    auto_dismiss: False
+    title: 'Status'
+    BoxLayout:
+        orientation: "horizontal"
+        Label:
+            id: _pop_up_text
+            text: 'Obtaining results'
+        ProgressSpinner:
+        	color: 1, 1, 1, 1
+			stroke_width: 2
+			speed: 1
